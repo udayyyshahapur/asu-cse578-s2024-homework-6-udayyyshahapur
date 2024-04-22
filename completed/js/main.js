@@ -1,13 +1,6 @@
-let svg; 
+let svg, svgWildBar; 
 const svgWidth = 1400;
 const svgHeight = 800;
-
-let svgWildBar;
-const svgBarWidth = 1400;
-const svgBarHeight = 800;
-const barMargin = { top: 20, bottom: 200, left: 50, right: 20};
-const barInnerWidth = svgBarWidth - barMargin.left - barMargin.right;
-const barInnerHeight = svgBarHeight - barMargin.top - barMargin.bottom;
 
 let total_data = [];
 const margin = { top: 20, bottom: 200, left: 50, right: 20};
@@ -34,6 +27,7 @@ const radiusValue = (value) => {
         return 30;
     }
 }
+
 // This function is called once the HTML page is fully loaded by the browser
 document.addEventListener('DOMContentLoaded', function () {
     svg = d3.select('#myDataVis') 
@@ -46,10 +40,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     svgWildBar = d3.select('#wildLifeVis') 
         .append('svg')
-        .attr('width', svgBarWidth)
-        .attr('height', svgBarHeight)
+        .attr('width', svgWidth)
+        .attr('height', svgHeight)
         .append('g')
-        .attr('transform', `translate(${barMargin.left}, ${barMargin.top})`)
+        .attr('transform', `translate(${margin.left}, ${margin.top})`)
         .style('margin-top', '20px');
 
     Promise.all([d3.csv('data/final.csv')])
