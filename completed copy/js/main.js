@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
    // This will load your CSV file(s) and store them into arrays.
 
     Promise.all([d3.csv('data/parks.csv'), d3.csv('data/species.csv')])
+    // Hint: you can add/edit this with any new datasets you create through the dataManipulation folder 
         .then(function (values) {
             parks_data = values[0];
             species_data = values[1];
@@ -23,5 +24,10 @@ function drawBubblePlot() {
 
 // Use this function to draw your second chart on interaction with the first
 function drawBarPlot(dataFromFirstPlot) {
+    console.log('trace:drawBarPlot()');
+}
+
+// Extra Credit: Use this function to display some additional info not in the first two charts. 
+function displayAdditionalInfo(dataFromFirstPlot) {
     console.log('trace:drawBarPlot()');
 }

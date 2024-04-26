@@ -44,24 +44,22 @@ You are provided a `/dataManipulation` folder. You can write some code here to g
 
 | 🔍 **Hint:** Make sure your dataset is in the correct form when interacting with the bubble plot. Note that you require the count of unique categories of species (example: Mammal, Bird etc).
 
-// DONE TILL HERE
 ## Step 2: Displaying a bubble plot 
 
-When the page first loads, all three panels should be blank.
-When the user enters a set of text in the top panel and then clicks on the `Submit` button, you should display a treemap that shows the distrubution of grammar characters from the `textarea` (i.e., the vowel counts, the consonant counts, and the punctuation counts in the entered text).
+When the page loads, the bubble plot should be displayed. The X and Y axes should represent the Longitude and Latitude respectively.
+You must also figure out a way to display (choose appropriate radiuses) the sizes of the bubbles in a way to represent the area of the National Park. When the user hovers over a bubble a set of text in the top panel and then clicks on the `Submit` button, you should display a treemap that shows the distrubution of grammar characters from the `textarea` (i.e., the vowel counts, the consonant counts, and the punctuation counts in the entered text).
 
 - You'll want to first read the entered text from the `textarea` and store it in a set of one or more data structures. Every time the submit button is pressed, you'll need to clear and recreate these (and re-display the treemap).
-- Your treemap should be centered inside the `#treemap_div` svg. You may choose the margin around the chart, but make it doesn't go outside of the `svg`'s bounds, and that it's not too small.
-- Choose a categorical d3 color scale for this chart by picking a color scale from [https://github.com/d3/d3-scale-chromatic](https://github.com/d3/d3-scale-chromatic) or creating your own manual one. All vowels will be one color, consonants another, and puncutations a third.
+- Your bubbleplot should be inside the `#visOne` div. You may choose the margin around the chart, but make sure it doesn't go outside of the `div`'s bounds, and that it's not too small.
 - Similar to what's shown in the treemap, the rectangles in each group should be organized together (e.g., all vowels together). There are various ways to create these hierarchies; for my code, I used this [D3.js Graph Gallery tutorial](https://d3-graph-gallery.com/graph/treemap_custom.html) as a reference (make sure you refernece the D3 v6 code, which is similar to v7, instead of the v4 code), and you may also find it beneficial (you can play around with the treemap paddings to figure out how to do the spacings correctly).
-- Give the rectangles in this chart a 1 pixel black border (i.e., `stroke-width=1`), and add a small padding/margin between the rectangles.
+- Give the bubbles in this chart a 1 pixel black border on hover so that the user can know which bubble he/she is interacting with as there will be overlap. On selecting a bubble which depicts a National Park, a bar graph needs to be plotted.
 
-| 🔍 **Hint:** Make sure your dataset is in the correct form when creating the treemap. The D3 Graph Gallery tutorial, for example, links to a JSON file that shows a correct hierarchical/nested dataset that is suitable for the `d3.treemap()` funcion.
+| 🔍 **Hint:** Make sure your dataset is in the correct form when creating the bubble plot. You may want to modify the order of the rows so that each and every bubble can be selected. (Sometimes, a small bubble can be overlapped with a bigger bubble. You will not receive a full score if this is the case)
 
 
 ![imgs/hover.gif](imgs/tooltip_treemap.gif)
 
-## Step 2: Displaying a Sankey chart
+## Step 3: Displaying a Sankey chart
 
 When the user clicks on a rectangle in the treemap, draw a Sankey diagram in the bottom right panel. Your design should look similar to what is in the screenshots. The chart should be centered in the panel (with reasonable margins, similar to the screenshots), with nodes sized based on the counts of each character.
 

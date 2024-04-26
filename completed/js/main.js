@@ -1,4 +1,4 @@
-let svg, svgWildBar; 
+let svg, svgWildBar, svgWord; 
 const svgWidth = 1400;
 const svgHeight = 800;
 
@@ -6,6 +6,9 @@ let total_data = [];
 const margin = { top: 20, bottom: 200, left: 50, right: 20};
 const innerWidth = svgWidth - margin.left - margin.right;
 const innerHeight = svgHeight - margin.top - margin.bottom;
+
+let clickedBubble = null;
+let clickedBar = null;
 
 circles_legend_values = [
     {text: "<= 69010.5", value: 69010.5},
@@ -27,7 +30,6 @@ const radiusValue = (value) => {
         return 30;
     }
 }
-
 // This function is called once the HTML page is fully loaded by the browser
 document.addEventListener('DOMContentLoaded', function () {
     svg = d3.select('#myDataVis') 
@@ -46,13 +48,66 @@ document.addEventListener('DOMContentLoaded', function () {
         .attr('transform', `translate(${margin.left}, ${margin.top})`)
         .style('margin-top', '20px');
 
-    Promise.all([d3.csv('data/final.csv')])
+    svgWord = d3.select('#addnPlot') 
+        .append('svg')
+        .attr('width', svgWidth)
+        .attr('height', svgHeight)
+        .append('g')
+        .attr('transform', `translate(${margin.left}, ${margin.top})`)
+        .style('margin-top', '20px');
+
+    Promise.all([d3.csv('data/final.csv'), d3.csv('data/species.csv')])
         .then(function (values) {
             total_data = values[0];
+            species_data = values[1];
             drawCustomVis(svg); 
+            console.log('species_data', species_data)
         }
     );
 });
+
+function drawBubbleLegend() {
+    var xCircle = innerWidth - 150;
+    var xLabel1 = innerWidth - 70;
+    var xLabel2 = innerWidth - 230;
+    
+    svg.selectAll("legend")
+        .data(circles_legend_values)
+        .enter()
+        .append("circle")
+          .attr("cx", xCircle)
+          .attr("cy", d => margin.top * 5 - radiusValue(d.value))
+          .attr("r", d => radiusValue(d.value))
+          .style("fill", "none")
+          .attr("stroke", "black")
+    
+    svg.selectAll("legend")
+        .data(circles_legend_values)
+        .enter()
+        .append("line")
+          .attr('x1', (function(d, i) { return i % 2 === 0 ? xCircle + radiusValue(d.value) : xCircle - radiusValue(d.value) }))
+          .attr('x2', (function(d, i) { return i % 2 === 0 ? xLabel1 : xLabel2; }))
+          .attr('y1', function(d){ return (margin.top * 5) - radiusValue(d.value)  } )
+          .attr('y2', function(d){ return (margin.top * 5) - radiusValue(d.value) } )
+          .attr('stroke', 'black')
+          .style('stroke-dasharray', ('2,2'))
+
+    svg.selectAll("legend")
+        .data(circles_legend_values)
+        .enter()
+        .append("text")
+          .attr('x', (function(d, i) { return i % 2 === 0 ? xLabel1 : xLabel2 - 50; }))
+          .attr('y', function(d){ return (margin.top * 5) - radiusValue(d.value) + 2 } )
+          .text( function(d){ return d.text } )
+          .style("font-size", "7px")
+          .attr('alignment-baseline', 'middle')
+
+    svg.append("text")
+        .attr('x', xCircle)
+        .attr("y", margin.top * 5 + 25)
+        .text("Area of Park in Acres ")
+        .attr("text-anchor", "middle")
+}
 
 function drawCustomVis(svg) {
     // Creating X-Scale
@@ -144,51 +199,21 @@ function drawCustomVis(svg) {
             wildBubbleDiv.style("opacity", 0);
         })
         .on("click", function(event, d) {
+            var existingTable = document.querySelector('table');
+    
+            // If a table exists, remove it
+            if (existingTable !== null) {
+                existingTable.remove();
+            }
+           clickedBubble = d;
+           clickedBar = null;
            drawWildLifeBar(svgWildBar, d);
            d3.select("#wildLifeVis").style("display", "block");
+           
+    console.log('clickedBar', clickedBar)
+    console.log('clickedBubble', clickedBubble)
         });
-    
-    
-    var xCircle = innerWidth - 150;
-    var xLabel1 = innerWidth - 70;
-    var xLabel2 = innerWidth - 230;
-    
-    svg.selectAll("legend")
-        .data(circles_legend_values)
-        .enter()
-        .append("circle")
-          .attr("cx", xCircle)
-          .attr("cy", d => margin.top * 5 - radiusValue(d.value))
-          .attr("r", d => radiusValue(d.value))
-          .style("fill", "none")
-          .attr("stroke", "black")
-    
-    svg.selectAll("legend")
-        .data(circles_legend_values)
-        .enter()
-        .append("line")
-          .attr('x1', (function(d, i) { return i % 2 === 0 ? xCircle + radiusValue(d.value) : xCircle - radiusValue(d.value) }))
-          .attr('x2', (function(d, i) { return i % 2 === 0 ? xLabel1 : xLabel2; }))
-          .attr('y1', function(d){ return (margin.top * 5) - radiusValue(d.value)  } )
-          .attr('y2', function(d){ return (margin.top * 5) - radiusValue(d.value) } )
-          .attr('stroke', 'black')
-          .style('stroke-dasharray', ('2,2'))
-
-    svg.selectAll("legend")
-        .data(circles_legend_values)
-        .enter()
-        .append("text")
-          .attr('x', (function(d, i) { return i % 2 === 0 ? xLabel1 : xLabel2 - 50; }))
-          .attr('y', function(d){ return (margin.top * 5) - radiusValue(d.value) + 2 } )
-          .text( function(d){ return d.text } )
-          .style("font-size", "7px")
-          .attr('alignment-baseline', 'middle')
-
-    svg.append("text")
-        .attr('x', xCircle)
-        .attr("y", margin.top * 5 + 25)
-        .text("Area of Park in Acres ")
-        .attr("text-anchor", "middle")
+    drawBubbleLegend();
         
 }
 
@@ -223,7 +248,6 @@ function drawWildLifeBar(svg, d) {
             +d['Algae'],
         ]
     );
-    console.log('cate', categoryCount[0])
     const maxCategoryValue = Math.max(...categoryCount[0]);
 
     // Creating X-Scale
@@ -301,4 +325,70 @@ function drawWildLifeBar(svg, d) {
         .on("mouseout", function(d) {
             wildBarDiv.style("opacity", 0);
         })
+        .on("click", function(event, d) {
+            clickedBar = d;
+            drawWordCloud(svgWord, d)
+            d3.select("#addnPlot").style("display", "block");
+            console.log('clickedBar', clickedBar)
+            console.log('clickedBubble', clickedBubble)
+         });
+}
+
+function drawTableVis(data) {
+    // Check if a table already exists
+    var existingTable = document.querySelector('table');
+    
+    // If a table exists, remove it
+    if (existingTable !== null) {
+        existingTable.remove();
+    }
+    
+    // Create a table element
+    var table = document.createElement('table');
+    table.style.margin = 'auto'; // Center align the table
+    
+    // Create header row
+    var headerRow = table.insertRow();
+    
+    // Add header for category list
+    var categoryHeaderCell = document.createElement('th');
+    categoryHeaderCell.textContent = 'List of ' + data[0]['Category'] + 's in ' + data[0]['Park Name'];
+    categoryHeaderCell.setAttribute('colspan', Object.keys(data[0]).length - 3); // Excluding the first 3 columns
+    categoryHeaderCell.style.fontSize = '20px'; // Increase font size
+    categoryHeaderCell.style.textAlign = 'center'; // Center align the header
+    categoryHeaderCell.style.paddingBottom = '10px'; // Add margin between caption and table
+    headerRow.appendChild(categoryHeaderCell);
+    
+    // Create header row for data columns
+    var dataHeaderRow = table.insertRow();
+    for (var key in data[0]) {
+        if (key !== 'Species ID' && key !== 'Park Name' && key !== 'Category') {
+            var headerCell = document.createElement('th');
+            headerCell.textContent = key;
+            headerCell.style.textAlign = 'center'; // Center align the column headers
+            dataHeaderRow.appendChild(headerCell);
+        }
+    }
+
+    // Add rows and cells with data, excluding the first 3 columns
+    data.forEach(function(item) {
+        var row = table.insertRow();
+        for (var key in item) {
+            if (key !== 'Species ID' && key !== 'Park Name' && key !== 'Category') {
+                var cell = row.insertCell();
+                cell.textContent = item[key];
+                cell.style.textAlign = 'center'; // Center align the cell contents
+            }
+        }
+    });
+    
+    document.body.appendChild(table);
+}
+
+function drawWordCloud(svg, d) {
+    // Clearing the chart to redraw next one
+    const myWords = species_data.filter(item => item["Park Name"] === clickedBubble["Park Name"] && item["Category"] === clickedBar.category);
+    console.log('words', myWords);
+    drawTableVis(myWords);
+
 }
