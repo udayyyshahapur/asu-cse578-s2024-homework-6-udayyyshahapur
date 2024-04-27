@@ -5,11 +5,11 @@ The purpose of this homework is to give you practice interactively building and 
 - Preprocess Data in a language of your choice (preferably Python)
 - Visualize multiple attributes of dataset in a bubble plot
 - Dynamically update charts based on user interactions
-- Add an interactive tooltip for both graphs
+- Add an interactive tooltip for any graph
 
 The screenshot below shows an example of what your finished interface will look like.
 
-![imgs/interface.png](imgs/interface.png)
+![images/Final.png](images/Final.png)
 
 ## Overview
 
@@ -24,7 +24,7 @@ Since the graphs will be difficult to read exact values of Park area and count o
 
 ## Data Description
 
-The `parks.csv` file consists of a list of National Parks in the USA and the `species.csv` consists of a list of species in each park. Processing these two csvs will give you the required data to plot the required graphs. An important part of Data Visualisation is Data Processing. You are not always provided with the required data in a suitable manner. Sometimes, you will need to alter or combine the datasets to get the required data to plot the graphs.  
+The `parks.csv` file consists of a list of National Parks in the USA and the `species.csv` consists of a list of species in each park. Processing these two csvs will give you the required data to plot the required graphs. An important part of Data Visualisation is Data Processing. You are not always provided with the required data in a suitable manner. Sometimes, you will need to alter or combine multiple datasets to get the required data to plot the graphs.  
 
 ## To complete the assignment
 
@@ -40,69 +40,54 @@ When you first run the page, you should see the empty interface. Add your name a
 ## Step 1: Processing the data
 
 A very important task to complete before starting any visualisation is to analyze the data and make sure you have enough information to plot your graphs. Sometimes, you will need to merge data from different csv files or process data within the same csv file to get additional derived information.
-You are provided a `/dataManipulation` folder. You can write some code here to give you the required information for both graphs.
+You are provided a `/dataManipulation` folder. You can write some code here to give you the required information or create new csvs for both graphs.
 
 | 🔍 **Hint:** Make sure your dataset is in the correct form when interacting with the bubble plot. Note that you require the count of unique categories of species (example: Mammal, Bird etc).
 
 ## Step 2: Displaying a bubble plot 
 
-When the page loads, the bubble plot should be displayed. The X and Y axes should represent the Longitude and Latitude respectively.
-You must also figure out a way to display (choose appropriate radiuses) the sizes of the bubbles in a way to represent the area of the National Park. When the user hovers over a bubble a set of text in the top panel and then clicks on the `Submit` button, you should display a treemap that shows the distrubution of grammar characters from the `textarea` (i.e., the vowel counts, the consonant counts, and the punctuation counts in the entered text).
-
-- You'll want to first read the entered text from the `textarea` and store it in a set of one or more data structures. Every time the submit button is pressed, you'll need to clear and recreate these (and re-display the treemap).
+- When the page loads, the bubble plot should be displayed. The X and Y axes should represent the Longitude and Latitude respectively.
+You must also figure out a way to display (choose appropriate radiuses) the sizes of the bubbles in a way to represent the area of the National Park.
 - Your bubbleplot should be inside the `#visOne` div. You may choose the margin around the chart, but make sure it doesn't go outside of the `div`'s bounds, and that it's not too small.
-- Similar to what's shown in the treemap, the rectangles in each group should be organized together (e.g., all vowels together). There are various ways to create these hierarchies; for my code, I used this [D3.js Graph Gallery tutorial](https://d3-graph-gallery.com/graph/treemap_custom.html) as a reference (make sure you refernece the D3 v6 code, which is similar to v7, instead of the v4 code), and you may also find it beneficial (you can play around with the treemap paddings to figure out how to do the spacings correctly).
 - Give the bubbles in this chart a 1 pixel black border on hover so that the user can know which bubble he/she is interacting with as there will be overlap. On selecting a bubble which depicts a National Park, a bar graph needs to be plotted.
 
 | 🔍 **Hint:** Make sure your dataset is in the correct form when creating the bubble plot. You may want to modify the order of the rows so that each and every bubble can be selected. (Sometimes, a small bubble can be overlapped with a bigger bubble. You will not receive a full score if this is the case)
 
+## Step 3: Displaying the bar chart
 
-![imgs/hover.gif](imgs/tooltip_treemap.gif)
+When the user clicks on a bubble in the bubbleplot, draw a bar graph diagram in the bottom div. The chart should be centered in the panel (with reasonable margins, similar to the screenshots), with nodes sized based on the counts of each category.
 
-## Step 3: Displaying a Sankey chart
+- Have an appropriate amount of spacing/padding between the rectangles. It's upto you to decide whether a vertical or horizontal bar plot is required here.
+- If the user clicks on a different bubbles in the bubble plot, re-load the bar diagram for the selected National Park. 
+- You should also update the text at the top or bottom of this panel whenever a Sasnkey chart is loaded. When no chart is shown, do not display the bar plot at all. When a bubble is selected, it should say `Number of species per category in 'National Park'`, where `National Park` is the selected bubble.
 
-When the user clicks on a rectangle in the treemap, draw a Sankey diagram in the bottom right panel. Your design should look similar to what is in the screenshots. The chart should be centered in the panel (with reasonable margins, similar to the screenshots), with nodes sized based on the counts of each character.
+## Step 4: Add a hover tooltip to the two charts
 
-- The node rectangles in the Sankey diagram should be the same colors as the rectangles in the treemap. In my screenshots, I put a bit of spacing/padding between the rectangles (i.e., vertical spacing between the rectangles in the left column), and added a small rounding to the rectangles. You should give the bars a 1 pixel thick black border.
-- If the user clicks on a different rectangle in the treemap, re-load the Sankey diagram for the selected character. When you do this, you'll need to build an appropriate dataset: the left column will show the counts of characters that occur immediately before that character (e.g., in the top screenshot on this page, `a` is selected, and the left column shows `la`, `ma`, etc.). The middle column sizes the `a` character based on the number of times it appears in the submitted text, and the right column shows characters immediately after `a` (e.g., `am`, `ad`, etc.). The ordering for nodes in the left/right columns is up to you (I'm using the ordering outputted by D3's `sankey` library).
-- If the user clicks the `submit` text button in the top panel (thus submitting a new set of text, and re-loading the treemap), clear the Sankey diagram (make this a blank panel).
-- You should also update the text at the top of this panel whenever a Sasnkey chart is loaded/cleared. When no chart is shown, the text should say `Character flow for ...`. When a character is selected, it should say `Character flow for 'char'`, where `char` is the selected character.
+Finally, add a tooltip to the two charts. When the user hovers over a bubble in the bubble plot, display the name of the hovered National Park, which state it is in and the area of that National Park. When a user hovers over a rectangle in the bar diagram, show the count for that particular category.
 
-| 🔍 **Hint:** D3 does not contain a `sankey` function in its base library, so you'll need to import one. There are several libraries out there; for my demo code, I used the `d3-sankey.min.js` library linked here: [Sankey Diagram with D3 v7
-](https://gist.github.com/d3noob/31665aced416f27abca4fa46f5f4b568). Similar to the treemap above, pay careful attention with building your dataset so it runs correctly in the Sankey algorithm you use.
+The tooltip can be styled according to you and it should smoothly follow the user's mouse as it moves along the rectangle, and disappear when it's no longer over the bubble/rectangle. You'll want to use mouse events to control this functionality (`mouseover`, `mousemove`, `mouseout`). 
 
-![imgs/hover.gif](imgs/click_treemap.gif)
-
-## Step 3: Add a hover tooltip to the two charts
-
-
-Finally, add a tooltip to the two charts. When the user hovers over a rectangle in the treemap, display the name of the hovered character and the count for that character. When a user hovers over a rectangle in the Sankey diagram, show an appropriate tooltip:
-
-- Left column: `Character 'char' flows into 'selected char' COUNT times.`
-- Middle column: `Character 'selected char' appears COUNT times.`
-- Right column: `Character 'selected char' flows into 'char' COUNT times.`
-
-You can see the correct functionality in the GIF above.
-
-The tooltip should be styled similar to the GIF (e.g., white background, black rounded border) and smoothly follow the user's mouse as it moves along the rectangle, and disappear when it's no longer over the rectangle. You'll want to use mouse events to control this functionality (`mouseover`, `mousemove`, `mouseout`). 
+![images/TooltipBar.png](images/TooltipBar.png)
+![images/TooltipBubble.png](images/TooltipBubble.png)
 
 | 🔍 **Hint:** There are multiple ways to implement tooltips. One option is defining a div that's hidden unless you are hovering over a bar; when that happens, you populate the div with the necessary info, change its display to visible, and move it to the appropriate position on the so it follows the mouse's x/y position on the page. See  this page which for an example: [https://bl.ocks.org/d3noob/97e51c5be17291f79a27705cef827da2](https://bl.ocks.org/d3noob/97e51c5be17291f79a27705cef827da2).
 
-| 🔍 **Hint:** When you mouse over a rectangle, you want to select the currently hovered data point. Inside your `mouseover`/`mousemove`/`mouseout` functions, you can have two parameters like so: `.on('mouseover', function(d, i) { ...})`. Use the Dev Tools to see what the `d` and `i` objects are, and what properties they contain, as a way to figure out how to reference the data item that is currently part of the event (i.e., that corresponds to the rectangle).
+| 🔍 **Hint:** When you mouse over a bubble, you want to select the currently hovered data point. Inside your `mouseover`/`mousemove`/`mouseout` functions, you can have two parameters like so: `.on('mouseover', function(d, i) { ...})`. Use the Dev Tools to see what the `d` and `i` objects are, and what properties they contain, as a way to figure out how to reference the data item that is currently part of the event (i.e., that corresponds to the rectangle).
 
 ## Extra Credit
 
-You can receive up to four extra credit points for this assignment. Each bullet point is worth up to two points (depending on quality  of implementation).
+You can receive up to two extra credit points for this assignment. Each bullet point is worth up to two points (depending on quality  of implementation).
 
-- Implement linked highlighting between the treemap and Sankey chart. For example, when a rectangle in the treemap is hovered over, highlight the rectangle in the treemap and in the Sankey diagram. For example, you could make the border a little thicker and change its stroke color to an easily visible highlight color to do this. Likewise, when a user hovers over a rectangle in the Sankey diagram, highlight all other rectangles in the Sankey and treemap that contain that character.
-- Extend the linked highlighting to also highlight characters in the `textarea`. In other words, when you hover on a rectangle in the treemap or Sankey, highlight instances of that character in the text box. Likewise, think about how to smartly implement this in the Sankey chart: do you want to highlight _all_ instances of a character, or only ones that are part of the Sankey's currently shown chart? Also consider color: what color should you use to highlight the characters in the text box? If your color map uses very saturated colors, you might want to use a lighter shade (or a shade with partial opacity) to make it easy to still read the words in the text box. Note that the "base" `textarea` does not support highlighting individual characters, so you'll have to figure out a creative way to accomplish this, either by swapping out the `textarea` for different HTML elements (while maintaining the look and feel), or some other solution ([like this](https://codersblock.com/blog/highlight-text-inside-a-textarea/)). Note that I haven't tested this link out, so I am not sure if will work! :-)
+- Implement any additional form of data visualisation that shows an even more detailed information of the particular category selected in the bar graph. You are free to be open minded about this. You can display a word cloud, a table, a pie/donut plot etc.
+The main motivation for this is for you to understand interaction and passing data between plots that will help you in further programming assignments and your group project implementation. 
 
 ## Grading
 
 This assignment is worth 10 points.
 
-- Step 0 is worth 1 point
-- Step 1 is worth 3 points
-- Step 2 is worth 3 points
-- Step 3 is worth 3 points
-- The Extra Credit is worth up to 4 bonus points
+- Step 0 is worth 1 point. 
+- Step 1 is worth 2 points. 
+- Step 2 is worth 4 points. You will not get a full score here if any bubble is not able to be selected. 
+- Step 3 is worth 2 points.
+- Step 4 is worth 1 point.
+- The Extra Credit is worth up to 2 bonus points.
